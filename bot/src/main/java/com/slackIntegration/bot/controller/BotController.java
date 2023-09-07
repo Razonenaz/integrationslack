@@ -1,6 +1,5 @@
 package com.slackIntegration.bot.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -9,31 +8,31 @@ import org.springframework.web.bind.annotation.RestController;
 import com.slackIntegration.bot.service.SlackService;
 
 @RestController
-@RequestMapping("/slackBot")
+@RequestMapping("/slack/bot")
 public class BotController {
+	SlackService service = new SlackService();
 
-	@Autowired
-	SlackService service;
-
-	@PostMapping("/createChannel/{name}")
+	@PostMapping("/channel/create/{name}")
 	public String createChannel(@PathVariable String name) {
-		
+
 		return service.createChannel(name);
 	}
 
-	@PostMapping("/joinChannel/{channelId}")
-	public String joinChannel(@PathVariable String channelId) {
-		return service.joinChannel(channelId);
+	@PostMapping("/channel/join/{id}")
+	public String joinChannel(@PathVariable String id) {
+
+		return service.joinChannel(id);
 	}
-	
-	@PostMapping("/inviteToChannel/{channelId}/{member}")
-	public String inviteToChannel(@PathVariable String channelId, @PathVariable String member) {
+
+	@PostMapping("/channel/invite/{id}/{member}")
+	public String inviteToChannel(@PathVariable String id, @PathVariable String member) {
+
+		return service.inviteToChannel(id, member);
+	}
+
+	@PostMapping("/channel/send/{id}/{message}")
+	public String sendMessage(@PathVariable String id, @PathVariable String message) {
 		
-		return service.inviteToChannel(channelId, member);
-	}
-	
-	@PostMapping("/sendMessage/{channelId}/{message}")
-	public String sendMessage(@PathVariable String channelId, @PathVariable String message) {
-		return service.sendMessage(channelId, message);
+		return service.sendMessage(id, message);
 	}
 }

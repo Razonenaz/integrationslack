@@ -16,10 +16,13 @@ import com.slack.api.methods.response.conversations.ConversationsCreateResponse;
 import com.slack.api.methods.response.conversations.ConversationsInviteResponse;
 import com.slack.api.methods.response.conversations.ConversationsJoinResponse;
 
+import lombok.RequiredArgsConstructor;
+
 @Repository
+@RequiredArgsConstructor
 public class SlackRepository {
 
-	MethodsClient methods;
+	private final MethodsClient methods;
 
 	public SlackRepository() {
 		this.methods = SlackContext.getMethods("xoxb-5818656836292-5816320164770-V8T0MqkNSCLAX9zZUfJgy4ap");
@@ -35,9 +38,11 @@ public class SlackRepository {
 		return methods.conversationsJoin(ConversationsJoinRequest.builder().channel(channelId).build());
 	}
 
-	public ConversationsInviteResponse inviteToChannel(String channelId, List<String> users) throws IOException, SlackApiException {
-		
-		return methods.conversationsInvite(ConversationsInviteRequest.builder().channel(channelId).users(users).build());
+	public ConversationsInviteResponse inviteToChannel(String channelId, List<String> users)
+			throws IOException, SlackApiException {
+
+		return methods
+				.conversationsInvite(ConversationsInviteRequest.builder().channel(channelId).users(users).build());
 	}
 
 	public ChatPostMessageResponse sendMessage(String channelId, String message) throws IOException, SlackApiException {
