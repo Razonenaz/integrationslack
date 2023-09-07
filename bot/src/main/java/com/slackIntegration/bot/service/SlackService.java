@@ -6,19 +6,30 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import com.slack.api.methods.MethodsClient;
 import com.slack.api.methods.SlackApiException;
-import com.slackIntegration.bot.repository.SlackRepository;
+import com.slack.api.methods.request.chat.ChatPostMessageRequest;
+import com.slack.api.methods.request.conversations.ConversationsCreateRequest;
+import com.slack.api.methods.request.conversations.ConversationsInviteRequest;
+import com.slack.api.methods.request.conversations.ConversationsJoinRequest;
+import com.slackIntegration.bot.context.SlackContext;
 
+import lombok.Data;
 import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
+@Data
 public class SlackService {
-	SlackRepository repository = new SlackRepository();
+	private final MethodsClient methods;
+
+	public SlackService() {
+		this.methods = SlackContext.getMethods("xoxb-5818656836292-5816320164770-V8T0MqkNSCLAX9zZUfJgy4ap");
+	}
 
 	public String createChannel(String name) {
 		try {
-			repository.createChannel(name);
+			methods.conversationsCreate(ConversationsCreateRequest.builder().name(name).build());
 
 			return "Channel was created";
 		} catch (IOException | SlackApiException e) {
@@ -30,7 +41,7 @@ public class SlackService {
 
 	public String joinChannel(String channelId) {
 		try {
-			repository.joinChannel(channelId);
+			methods.conversationsJoin(ConversationsJoinRequest.builder().channel(channelId).build());
 
 			return "Bot joined channel";
 		} catch (IOException | SlackApiException e) {
@@ -44,7 +55,7 @@ public class SlackService {
 		try {
 			List<String> members = new ArrayList<String>();
 			members.add(member);
-			repository.inviteToChannel(channelId, members);
+			methods.conversationsInvite(ConversationsInviteRequest.builder().channel(channelId).users(members).build());
 
 			return "Members were added to channel";
 		} catch (IOException | SlackApiException e) {
@@ -56,7 +67,7 @@ public class SlackService {
 
 	public String sendMessage(String channelId, String message) {
 		try {
-			repository.sendMessage(channelId, message);
+			methods.chatPostMessage(ChatPostMessageRequest.builder().channel(channelId).text(message).build());
 
 			return "Message was sent";
 		} catch (IOException | SlackApiException e) {

@@ -7,10 +7,13 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.slackIntegration.bot.service.SlackService;
 
+import lombok.RequiredArgsConstructor;
+
 @RestController
 @RequestMapping("/slack/bot")
+@RequiredArgsConstructor
 public class BotController {
-	SlackService service = new SlackService();
+	private final SlackService service;
 
 	@PostMapping("/channel/create/{name}")
 	public String createChannel(@PathVariable String name) {
@@ -32,7 +35,7 @@ public class BotController {
 
 	@PostMapping("/channel/send/{id}/{message}")
 	public String sendMessage(@PathVariable String id, @PathVariable String message) {
-		
+
 		return service.sendMessage(id, message);
 	}
 }
